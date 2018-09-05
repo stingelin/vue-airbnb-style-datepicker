@@ -29,10 +29,10 @@
         <div
           class="asd__days-legend"
           v-for="(month, index) in showMonths"
-          :key="month"
+          :key="index"
           :style="[monthWidthStyles, {left: (width * index) + 'px'}]"
         >
-          <div class="asd__day-title" v-for="day in daysShort" :key="day">{{ day }}</div>
+          <div class="asd__day-title" v-for="(day, indx) in daysShort" :key="indx">{{ day }}</div>
         </div>
       </div>
 
@@ -40,7 +40,7 @@
         <transition-group name="asd__list-complete" tag="div">
           <div
             v-for="(month, monthIndex) in months"
-            :key="month.firstDateOfMonth"
+            :key="monthIndex"
             class="asd__month"
             :class="{hidden: monthIndex === 0 || monthIndex > showMonths}"
             :style="monthWidthStyles"
@@ -92,13 +92,7 @@
 </template>
 
 <script>
-import format from 'date-fns/format'
-import subMonths from 'date-fns/sub_months'
-import addMonths from 'date-fns/add_months'
-import getDaysInMonth from 'date-fns/get_days_in_month'
-import isBefore from 'date-fns/is_before'
-import isAfter from 'date-fns/is_after'
-import isValid from 'date-fns/is_valid'
+import { format, subMonths, addMonths, getDaysInMonth, isBefore, isAfter, isValid } from 'date-fns'
 import { debounce, copyObject, findAncestor, randomString } from './../helpers'
 
 export default {
@@ -121,9 +115,9 @@ export default {
     showActionButtons: { type: Boolean, default: true },
     isTest: {
       type: Boolean,
-      default: () => process.env.NODE_ENV === 'test'
+      default: () => process.env.NODE_ENV === 'test',
     },
-    trigger: { type: Boolean, default: false }
+    trigger: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -137,7 +131,7 @@ export default {
         selectedText: '#fff',
         text: '#565a5c',
         inRangeBorder: '#33dacd',
-        disabled: '#fff'
+        disabled: '#fff',
       },
       sundayFirst: false,
       monthNames: [
@@ -152,21 +146,13 @@ export default {
         'September',
         'October',
         'November',
-        'December'
+        'December',
       ],
-      days: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday'
-      ],
+      days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       daysShort: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'],
       texts: {
         apply: 'Apply',
-        cancel: 'Cancel'
+        cancel: 'Cancel',
       },
       startingDate: '',
       months: [],
@@ -181,7 +167,7 @@ export default {
       viewportWidth: window.innerWidth + 'px',
       isMobile: window.innerWidth < 768,
       isTablet: window.innerWidth >= 768 && window.innerWidth <= 1024,
-      triggerElement: undefined
+      triggerElement: undefined,
     }
   },
   computed: {
@@ -189,41 +175,31 @@ export default {
       return {
         'asd__wrapper--datepicker-open': this.showDatepicker,
         'asd__wrapper--full-screen': this.showFullscreen,
-        'asd__wrapper--inline': this.inline
+        'asd__wrapper--inline': this.inline,
       }
     },
     wrapperStyles() {
       return {
         position: this.inline ? 'static' : 'absolute',
-        top: this.inline
-          ? '0'
-          : this.triggerPosition.height + this.offsetY + 'px',
+        top: this.inline ? '0' : this.triggerPosition.height + this.offsetY + 'px',
         left: !this.alignRight
-          ? this.triggerPosition.left -
-            this.triggerWrapperPosition.left +
-            this.offsetX +
-            'px'
+          ? this.triggerPosition.left - this.triggerWrapperPosition.left + this.offsetX + 'px'
           : '',
         right: this.alignRight
-          ? this.triggerWrapperPosition.right -
-            this.triggerPosition.right +
-            this.offsetX +
-            'px'
+          ? this.triggerWrapperPosition.right - this.triggerPosition.right + this.offsetX + 'px'
           : '',
         width: this.width * this.showMonths + 'px',
-        zIndex: this.inline ? '0' : '100'
+        zIndex: this.inline ? '0' : '100',
       }
     },
     innerStyles() {
       return {
-        'margin-left': this.showFullscreen
-          ? '-' + this.viewportWidth
-          : `-${this.width}px`
+        'margin-left': this.showFullscreen ? '-' + this.viewportWidth : `-${this.width}px`,
       }
     },
     monthWidthStyles() {
       return {
-        width: this.showFullscreen ? this.viewportWidth : this.width + 'px'
+        width: this.showFullscreen ? this.viewportWidth : this.width + 'px',
       }
     },
     mobileHeaderFallback() {
@@ -274,20 +250,16 @@ export default {
       for (let i = 0; i < this.showMonths; i++) {
         numberOfMonthsArray.push(i)
       }
-      return numberOfMonthsArray.map(
-        (_, index) => firstMonthArray[index].firstDateOfMonth
-      )
-    }
+      return numberOfMonthsArray.map((_, index) => firstMonthArray[index].firstDateOfMonth)
+    },
   },
   watch: {
     selectedDate1(newValue, oldValue) {
-      let newDate =
-        !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
+      let newDate = !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
       this.$emit('date-one-selected', newDate)
     },
     selectedDate2(newValue, oldValue) {
-      let newDate =
-        !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
+      let newDate = !newValue || newValue === '' ? '' : format(newValue, this.dateFormat)
       this.$emit('date-two-selected', newDate)
     },
     mode(newValue, oldValue) {
@@ -312,7 +284,7 @@ export default {
       if (newValue) {
         this.openDatepicker()
       }
-    }
+    },
   },
   created() {
     this.setupDatepicker()
@@ -363,17 +335,13 @@ export default {
 
       let styles = {
         width: (this.width - 30) / 7 + 'px',
-        background: isSelected
-          ? this.colors.selected
-          : isInRange ? this.colors.inRange : '',
+        background: isSelected ? this.colors.selected : isInRange ? this.colors.inRange : '',
         color: isSelected
           ? this.colors.selectedText
           : isInRange ? this.colors.selectedText : this.colors.text,
         border: isSelected
           ? '1px double ' + this.colors.selected
-          : isInRange && this.allDatesSelected
-            ? '1px double ' + this.colors.inRangeBorder
-            : ''
+          : isInRange && this.allDatesSelected ? '1px double ' + this.colors.inRangeBorder : '',
       }
 
       if (isDisabled) {
@@ -382,11 +350,7 @@ export default {
       return styles
     },
     handleClickOutside(event) {
-      if (
-        event.target.id === this.triggerElementId ||
-        !this.showDatepicker ||
-        this.inline
-      ) {
+      if (event.target.id === this.triggerElementId || !this.showDatepicker || this.inline) {
         return
       }
       this.closeDatepicker()
@@ -396,31 +360,15 @@ export default {
         arrowDown: 40,
         arrowUp: 38,
         arrowRight: 39,
-        arrowLeft: 37
+        arrowLeft: 37,
       }
-      if (
-        event.keyCode === keys.arrowDown &&
-        !event.shiftKey &&
-        !this.showDatepicker
-      ) {
+      if (event.keyCode === keys.arrowDown && !event.shiftKey && !this.showDatepicker) {
         this.openDatepicker()
-      } else if (
-        event.keyCode === keys.arrowUp &&
-        !event.shiftKey &&
-        this.showDatepicker
-      ) {
+      } else if (event.keyCode === keys.arrowUp && !event.shiftKey && this.showDatepicker) {
         this.closeDatepicker()
-      } else if (
-        event.keyCode === keys.arrowRight &&
-        !event.shiftKey &&
-        this.showDatepicker
-      ) {
+      } else if (event.keyCode === keys.arrowRight && !event.shiftKey && this.showDatepicker) {
         this.nextMonth()
-      } else if (
-        event.keyCode === keys.arrowLeft &&
-        !event.shiftKey &&
-        this.showDatepicker
-      ) {
+      } else if (event.keyCode === keys.arrowLeft && !event.shiftKey && this.showDatepicker) {
         this.previousMonth()
       } else {
         if (this.mode === 'single') {
@@ -445,10 +393,7 @@ export default {
       }
       if (isFormatDayFirst) {
         //convert to YYYY-MM-DD
-        value = `${value.substring(6, 10)}-${value.substring(
-          3,
-          5
-        )}-${value.substring(0, 2)}`
+        value = `${value.substring(6, 10)}-${value.substring(3, 5)}-${value.substring(0, 2)}`
       }
 
       const valueAsDateObject = new Date(value)
@@ -482,11 +427,9 @@ export default {
         const colors = copyObject(this.$options.colors)
         this.colors.selected = colors.selected || this.colors.selected
         this.colors.inRange = colors.inRange || this.colors.inRange
-        this.colors.selectedText =
-          colors.selectedText || this.colors.selectedText
+        this.colors.selectedText = colors.selectedText || this.colors.selectedText
         this.colors.text = colors.text || this.colors.text
-        this.colors.inRangeBorder =
-          colors.inRangeBorder || this.colors.inRangeBorder
+        this.colors.inRangeBorder = colors.inRangeBorder || this.colors.inRangeBorder
         this.colors.disabled = colors.disabled || this.colors.disabled
       }
       if (this.$options.monthNames && this.$options.monthNames.length === 12) {
@@ -530,7 +473,7 @@ export default {
         firstDateOfMonth,
         monthName,
         monthNumber,
-        weeks: this.getWeeks(firstDateOfMonth)
+        weeks: this.getWeeks(firstDateOfMonth),
       }
     },
     getWeeks(date) {
@@ -556,7 +499,7 @@ export default {
         week.push({
           dayNumber,
           dayNumberFull: dayNumberFull,
-          fullDate: year + '-' + month + '-' + dayNumberFull
+          fullDate: year + '-' + month + '-' + dayNumberFull,
         })
 
         if (week.length === 7) {
@@ -573,11 +516,7 @@ export default {
       return weeks
     },
     selectDate(date) {
-      if (
-        this.isBeforeMinDate(date) ||
-        this.isAfterEndDate(date) ||
-        this.isDateDisabled(date)
-      ) {
+      if (this.isBeforeMinDate(date) || this.isAfterEndDate(date) || this.isDateDisabled(date)) {
         return
       }
 
@@ -621,8 +560,7 @@ export default {
       }
 
       return (
-        (isAfter(date, this.selectedDate1) &&
-          isBefore(date, this.selectedDate2)) ||
+        (isAfter(date, this.selectedDate1) && isBefore(date, this.selectedDate2)) ||
         (isAfter(date, this.selectedDate1) &&
           isBefore(date, this.hoverDate) &&
           !this.allDatesSelected)
@@ -645,11 +583,7 @@ export default {
       return isDisabled
     },
     isDisabled(date) {
-      return (
-        this.isDateDisabled(date) ||
-        this.isBeforeMinDate(date) ||
-        this.isAfterEndDate(date)
-      )
+      return this.isDateDisabled(date) || this.isBeforeMinDate(date) || this.isAfterEndDate(date)
     },
     previousMonth() {
       this.startingDate = this.subtractMonths(this.months[0].firstDateOfMonth)
@@ -659,9 +593,7 @@ export default {
       this.$emit('previous-month', this.visibleMonths)
     },
     nextMonth() {
-      this.startingDate = this.addMonths(
-        this.months[this.months.length - 1].firstDateOfMonth
-      )
+      this.startingDate = this.addMonths(this.months[this.months.length - 1].firstDateOfMonth)
       this.months.push(this.getMonth(this.startingDate))
 
       setTimeout(() => {
@@ -712,10 +644,7 @@ export default {
       this.closeDatepicker()
     },
     positionDatepicker() {
-      const triggerWrapperElement = findAncestor(
-        this.triggerElement,
-        '.datepicker-trigger'
-      )
+      const triggerWrapperElement = findAncestor(this.triggerElement, '.datepicker-trigger')
       this.triggerPosition = this.triggerElement.getBoundingClientRect()
       if (triggerWrapperElement) {
         this.triggerWrapperPosition = triggerWrapperElement.getBoundingClientRect()
@@ -723,8 +652,7 @@ export default {
         this.triggerWrapperPosition = { left: 0, right: 0 }
       }
 
-      const viewportWidth =
-        document.documentElement.clientWidth || window.innerWidth
+      const viewportWidth = document.documentElement.clientWidth || window.innerWidth
       this.viewportWidth = viewportWidth + 'px'
       this.isMobile = viewportWidth < 768
       this.isTablet = viewportWidth >= 768 && viewportWidth <= 1024
@@ -743,8 +671,8 @@ export default {
           datepickerWrapper.getBoundingClientRect().width
         this.alignRight = rightPosition > viewportWidth
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
