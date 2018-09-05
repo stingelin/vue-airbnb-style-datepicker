@@ -2926,7 +2926,7 @@
     data: function data() {
       return {
         wrapperId: 'airbnb-style-datepicker-wrapper-' + randomString(5),
-        dateFormat: 'YYYY-MM-DD',
+        dateFormat: 'YYYY-MM-dd',
         showDatepicker: false,
         showMonths: 2,
         colors: {

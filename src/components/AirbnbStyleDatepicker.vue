@@ -67,7 +67,7 @@
                     }"
                     :style="getDayStyles(fullDate)"
                     @mouseover="() => { setHoverDate(fullDate) }"
-                  >
+                    >
                     <button
                       class="asd__day-button"
                       type="button"
@@ -122,7 +122,7 @@ export default {
   data() {
     return {
       wrapperId: 'airbnb-style-datepicker-wrapper-' + randomString(5),
-      dateFormat: 'YYYY-MM-DD',
+      dateFormat: 'YYYY-MM-dd',
       showDatepicker: false,
       showMonths: 2,
       colors: {

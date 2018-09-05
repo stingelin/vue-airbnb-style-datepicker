@@ -177,7 +177,7 @@ return _c('td',{key:index + '_' + dayNumber,staticClass:"asd__day",class:{ 'asd_
   data: function data() {
     return {
       wrapperId: 'airbnb-style-datepicker-wrapper-' + randomString(5),
-      dateFormat: 'YYYY-MM-DD',
+      dateFormat: 'YYYY-MM-dd',
       showDatepicker: false,
       showMonths: 2,
       colors: {
